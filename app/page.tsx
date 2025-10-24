@@ -5,6 +5,8 @@ import {useMemo, useState} from "react";
 import {CustomButton} from "@/components/Button";
 import {CustomInput} from "@/components/Input";
 import {Message} from "@/components/Message";
+import {CustomSelect} from "@/components/Select";
+import {PREFECTURES} from "@/constants/prefectures";
 import {useForm, type PaymentMethod} from "@/hooks/useForm";
 import {X} from "lucide-react";
 
@@ -147,13 +149,20 @@ export default function Home() {
               </InputSection>
 
               <InputSection title="都道府県" required={true}>
-                <CustomInput
-                  placeholder="都道府県"
+                <CustomSelect
                   value={formData.prefecture}
                   onChange={handleTextChange("prefecture")}
                   isError={Boolean(errors.prefecture)}
                   errorMessage={errors.prefecture}
-                />
+                  className="w-full max-w-40"
+                >
+                  <option value="">都道府県を選択</option>
+                  {PREFECTURES.map((prefecture) => (
+                    <option key={prefecture.code} value={prefecture.name}>
+                      {prefecture.name}
+                    </option>
+                  ))}
+                </CustomSelect>
               </InputSection>
 
               <InputSection title="市区町村" required={true}>

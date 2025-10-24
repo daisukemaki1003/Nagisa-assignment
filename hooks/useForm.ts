@@ -71,7 +71,7 @@ export function useForm() {
 
   // テキスト入力の変更を反映し、必要に応じてエラーを解消する
   const handleTextChange = (field: TextField) => {
-    return (event: ChangeEvent<HTMLInputElement>) => {
+    return (event: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
       const {value} = event.target;
       setFormData((prev) => ({...prev, [field]: value}));
 
