@@ -1,16 +1,11 @@
 "use client";
 
-import {ChangeEvent, useMemo, useState} from "react";
+import {useMemo, useState} from "react";
 
 import {CustomButton} from "@/components/Button";
 import {CustomInput} from "@/components/Input";
 import {Message} from "@/components/Message";
-import {
-  type FormData,
-  type PaymentMethod,
-  type RequiredField,
-  useCheckoutForm,
-} from "@/hooks/useCheckoutForm";
+import {useForm, type PaymentMethod} from "@/hooks/useForm";
 import {X} from "lucide-react";
 
 const paymentMethods: Array<{value: PaymentMethod; label: string}> = [
@@ -28,20 +23,6 @@ const paymentMethods: Array<{value: PaymentMethod; label: string}> = [
   },
 ];
 
-const initialFormData: FormData = {
-  lastName: "",
-  firstName: "",
-  phoneNumber: "",
-  postalCode: "",
-  prefecture: "",
-  city: "",
-  address: "",
-  building: "",
-  paymentMethod: "credit_card",
-};
-
-type TextField = Exclude<keyof FormData, "paymentMethod">;
-
 type ConfirmationDetails = {
   fullName: string;
   phoneNumber: string;
@@ -50,38 +31,31 @@ type ConfirmationDetails = {
 };
 
 export default function Home() {
-  const {errors, clearFieldError, handleSubmit} = useCheckoutForm();
-  const [formData, setFormData] = useState<FormData>(initialFormData);
+  const {
+    formData,
+    errors,
+    handleTextChange,
+    handlePaymentMethodChange,
+    validateForm,
+    submitOrder,
+  } = useForm();
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const closeModal = () => {
-    setIsModalOpen(false);
-  };
-
-  // テキスト入力の変更を処理する
-  const handleTextChange = (field: TextField) => {
-    return (event: ChangeEvent<HTMLInputElement>) => {
-      const {value} = event.target;
-      setFormData((prev) => ({...prev, [field]: value}));
-
-      if (field !== "building" && value.trim() !== "") {
-        clearFieldError(field as RequiredField);
-      }
-    };
-  };
-
-  // 支払い方法の変更を処理する
-  const handlePaymentMethodChange = (event: ChangeEvent<HTMLInputElement>) => {
-    const value = event.target.value as PaymentMethod;
-    setFormData((prev) => ({...prev, paymentMethod: value}));
-    clearFieldError("paymentMethod");
-  };
+  // 購入内容確認モーダルを閉じる
+  const closeModal = () => setIsModalOpen(false);
 
   // 次へ進むボタンをクリックしたときの処理
   const handleNextStep = () => {
-    const isValid = handleSubmit(formData);
+    const isValid = validateForm();
     if (!isValid) return;
     setIsModalOpen(true);
+  };
+
+  // 注文確定ボタンをクリックしたときの処理
+  const handleConfirmOrder = () => {
+    const result = submitOrder();
+    if (!result.success) return;
+    setIsModalOpen(false);
   };
 
   // 購入内容確認モーダルで表示する配送先情報を取得する
@@ -109,6 +83,11 @@ export default function Home() {
       addressLines,
     };
   }, [formData]);
+
+  // 購入内容確認モーダルで表示する支払い方法を取得する
+  const selectedPaymentMethodLabel =
+    paymentMethods.find((method) => method.value === formData.paymentMethod)?.label ??
+    paymentMethods[0]?.label ?? "";
 
   return (
     <div className="min-h-screen w-full bg-gray-50 font-sans">
@@ -151,6 +130,8 @@ export default function Home() {
                   onChange={handleTextChange("phoneNumber")}
                   isError={Boolean(errors.phoneNumber)}
                   errorMessage={errors.phoneNumber}
+                  className="w-full max-w-40"
+                  type="tel"
                 />
               </InputSection>
 
@@ -161,6 +142,7 @@ export default function Home() {
                   onChange={handleTextChange("postalCode")}
                   isError={Boolean(errors.postalCode)}
                   errorMessage={errors.postalCode}
+                  className="w-full max-w-24"
                 />
               </InputSection>
 
@@ -258,7 +240,7 @@ export default function Home() {
               <section>
                 <h2 className="text-lg font-bold">お支払い方法</h2>
                 <div className="mt-4 border border-gray-300 p-3 text-sm">
-                  {paymentMethods.find((method) => method.value === formData.paymentMethod)?.label ?? ""}
+                  {selectedPaymentMethodLabel}
                 </div>
               </section>
 
@@ -275,7 +257,7 @@ export default function Home() {
               </section>
 
               <div className="mx-auto flex w-full max-w-56 flex-col gap-3">
-                <CustomButton type="button" onClick={closeModal}>
+                <CustomButton type="button" onClick={handleConfirmOrder}>
                   注文確定する
                 </CustomButton>
                 <CustomButton
