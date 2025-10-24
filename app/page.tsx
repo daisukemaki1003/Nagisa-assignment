@@ -1,15 +1,14 @@
-import {CustomButton} from "@/components/Button";
-import {CustomInput} from "@/components/Input";
-import {Message} from "@/components/Message";
-
+import { CustomButton } from "@/components/Button";
+import { CustomInput } from "@/components/Input";
+import { Message } from "@/components/Message";
 
 export default function Home() {
   return (
-    <div className="bg-gray-50 min-h-screen font-sans w-full">
-      <main className="max-w-3xl py-32 px-16 mx-auto">
+    <div className="min-h-screen w-full bg-gray-50 font-sans">
+      <main className="mx-auto max-w-3xl px-16 py-32">
         <h1 className="text-2xl font-bold">ご購入手続き</h1>
 
-        <form className="flex flex-col gap-10 mt-10">
+        <form className="mt-10 flex flex-col gap-10">
           <section className="flex flex-col gap-6">
             <h2 className="text-lg font-bold">配送先情報</h2>
 
@@ -56,18 +55,30 @@ export default function Home() {
           <section className="flex flex-col gap-6">
             <h2 className="text-lg font-bold">お支払い方法</h2>
             <div className="flex flex-col gap-2">
-              {[{
-                value: 'credit_card',
-                label: 'クレジットカード（Visa, MasterCard, JCB, American Express）',
-              }, {
-                value: 'convenience_store',
-                label: 'コンビニ決済',
-              }, {
-                value: 'carrier_payment',
-                label: 'キャリア決済',
-              }].map((paymentMethod) => (
-                <label className="flex gap-2 border border-gray-300 p-3" key={paymentMethod.value}>
-                  <input type="radio" name="payment_method" value={paymentMethod.value} />
+              {[
+                {
+                  value: "credit_card",
+                  label:
+                    "クレジットカード（Visa, MasterCard, JCB, American Express）",
+                },
+                {
+                  value: "convenience_store",
+                  label: "コンビニ決済",
+                },
+                {
+                  value: "carrier_payment",
+                  label: "キャリア決済",
+                },
+              ].map((paymentMethod) => (
+                <label
+                  className="flex gap-2 border border-gray-300 p-3"
+                  key={paymentMethod.value}
+                >
+                  <input
+                    type="radio"
+                    name="payment_method"
+                    value={paymentMethod.value}
+                  />
                   <span className="text-sm">{paymentMethod.label}</span>
                 </label>
               ))}
@@ -75,33 +86,31 @@ export default function Home() {
           </section>
 
           {/* フォームナビゲーションボタン */}
-          <div className="flex flex-col gap-2 max-w-xs mx-auto w-full">
+          <div className="mx-auto flex w-full max-w-xs flex-col gap-2">
             <CustomButton>次へ進む</CustomButton>
             <CustomButton variant="white">戻る</CustomButton>
           </div>
-
         </form>
       </main>
     </div>
   );
 }
 
-
 type InputSectionProps = {
   title: string;
   required: boolean;
   children: React.ReactNode;
 };
-const InputSection = ({title, required, children}: InputSectionProps) => {
+const InputSection = ({ title, required, children }: InputSectionProps) => {
   return (
     <section className="flex flex-col gap-2">
       <div className="flex gap-2">
         <h3 className="text-xs">{title}</h3>
-        {required &&
-          <div className="bg-red-500 px-0.5 rounded-sm flex items-center justify-center">
+        {required && (
+          <div className="flex items-center justify-center rounded-sm bg-red-500 px-0.5">
             <span className="text-xs text-white">必須</span>
           </div>
-        }
+        )}
       </div>
       {children}
     </section>

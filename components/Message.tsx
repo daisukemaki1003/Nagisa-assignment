@@ -1,4 +1,4 @@
-import {type ReactNode} from "react";
+import { type ReactNode } from "react";
 
 type MessageVariant = "error" | "warning" | "info";
 
@@ -8,7 +8,7 @@ type MessageProps = {
   className?: string;
 };
 
-const variantStyles: Record<MessageVariant, {container: string}> = {
+const variantStyles: Record<MessageVariant, { container: string }> = {
   error: {
     container: "border-red-300 bg-red-50 text-red-800",
   },
@@ -39,9 +39,5 @@ export function Message({
     .filter(Boolean)
     .join(" ");
 
-  return (
-    <div className={mergedClassName}>
-      {children}
-    </div>
-  );
+  return <div className={mergedClassName}>{children}</div>;
 }

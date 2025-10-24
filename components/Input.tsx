@@ -1,4 +1,4 @@
-import {type InputHTMLAttributes} from "react";
+import { type InputHTMLAttributes } from "react";
 
 type CustomInputProps = InputHTMLAttributes<HTMLInputElement> & {
   isError?: boolean;
@@ -27,8 +27,18 @@ export function CustomInput({
 
   // エラーがあれば赤色にする
   const stateClasses = isError
-    ? ["border-red-500", "focus:border-red-500", "focus:ring-1", "focus:ring-red-500"]
-    : ["border-gray-300", "focus:border-blue-500", "focus:ring-1", "focus:ring-blue-500"];
+    ? [
+        "border-red-500",
+        "focus:border-red-500",
+        "focus:ring-1",
+        "focus:ring-red-500",
+      ]
+    : [
+        "border-gray-300",
+        "focus:border-blue-500",
+        "focus:ring-1",
+        "focus:ring-blue-500",
+      ];
 
   inputClasses.push(...stateClasses);
 
@@ -36,7 +46,7 @@ export function CustomInput({
   if (className) inputClasses.push(className);
 
   return (
-    <div className={"flex flex-col w-full"}>
+    <div className={"flex w-full flex-col"}>
       <input
         {...rest}
         placeholder={placeholder}

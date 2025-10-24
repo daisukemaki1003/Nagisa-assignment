@@ -1,4 +1,4 @@
-import type {ButtonHTMLAttributes} from "react";
+import type { ButtonHTMLAttributes } from "react";
 
 type CustomButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
   variant?: "black" | "white";
@@ -20,14 +20,12 @@ export const CustomButton = ({
     "rounded-sm",
     "transition-opacity",
     "cursor-pointer",
-    VARIANT_CLASSNAME[variant]
+    VARIANT_CLASSNAME[variant],
   ];
 
   return (
     <button
-      className={[...classes, className]
-        .filter(Boolean)
-        .join(" ")}
+      className={[...classes, className].filter(Boolean).join(" ")}
       {...rest}
     />
   );
