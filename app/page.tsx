@@ -1,8 +1,24 @@
+"use client";
+
+import { useState } from "react";
+
 import { CustomButton } from "@/components/Button";
 import { CustomInput } from "@/components/Input";
 import { Message } from "@/components/Message";
+import { X } from "lucide-react";
+import { required } from "zod/mini";
 
 export default function Home() {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const openModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+  };
+
   return (
     <div className="min-h-screen w-full bg-gray-50 font-sans">
       <main className="mx-auto max-w-3xl px-16 py-32">
@@ -87,11 +103,60 @@ export default function Home() {
 
           {/* フォームナビゲーションボタン */}
           <div className="mx-auto flex w-full max-w-xs flex-col gap-2">
-            <CustomButton>次へ進む</CustomButton>
-            <CustomButton variant="white">戻る</CustomButton>
+            <CustomButton type="button" onClick={openModal}>
+              次へ進む
+            </CustomButton>
+            <CustomButton type="button" variant="white">
+              戻る
+            </CustomButton>
           </div>
         </form>
       </main>
+
+      {isModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+          <div className="w-full max-w-2xl rounded-sm bg-white">
+            <div className="flex items-center justify-between border-b border-gray-200 px-5 py-3">
+              <h2 className="text-sm font-bold">購入内容確認</h2>
+              <button type="button" onClick={closeModal}>
+                <X className="h-4 w-4" />
+              </button>
+            </div>
+
+            <div className="flex flex-col gap-6 px-8 py-6">
+              <section>
+                <h2 className="text-lg font-bold">お支払い方法</h2>
+                <div className="mt-4 border border-gray-300 p-3 text-sm">
+                  クレジットカード（Visa, MasterCard, JCB, American Express）
+                </div>
+              </section>
+
+              <section>
+                <h2 className="text-lg font-bold">お支払い方法</h2>
+                <div className="mt-4 flex flex-col gap-1 border border-gray-300 p-3 text-xs text-black/80">
+                  <p className="text-sm font-bold text-black">田中 太郎様</p>
+                  <p>080-1234-5678</p>
+                  <p>〒123-1234</p>
+                  <p>東京都渋谷区渋谷3丁目9-10KDCビル8F</p>
+                </div>
+              </section>
+
+              <div className="mx-auto flex w-full max-w-56 flex-col gap-3">
+                <CustomButton type="button" onClick={closeModal}>
+                  注文確定する
+                </CustomButton>
+                <CustomButton
+                  type="button"
+                  variant="white"
+                  onClick={closeModal}
+                >
+                  戻る
+                </CustomButton>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

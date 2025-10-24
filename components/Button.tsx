@@ -16,10 +16,12 @@ export const CustomButton = ({
 }: CustomButtonProps) => {
   const classes = [
     "px-4",
-    "py-2",
-    "rounded-sm",
+    "py-3",
+    "rounded-xs",
     "transition-opacity",
     "cursor-pointer",
+    "text-xs",
+    "font-bold",
     VARIANT_CLASSNAME[variant],
   ];
 
