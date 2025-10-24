@@ -1,4 +1,5 @@
 import {CustomInput} from "@/components/Input";
+import {Message} from "@/components/Message";
 
 
 export default function Home() {
@@ -12,6 +13,11 @@ export default function Home() {
             <h2 className="text-lg font-bold">配送先情報</h2>
 
             <div className="flex flex-col gap-5 border border-gray-200 p-6">
+
+              <Message variant="warning">
+                ※配送先住所に誤りがある場合は、住所不明のため配送不可となります。送付先ご住所・郵便番号に誤りがないか十分にご確認をお願いいたします。
+              </Message>
+
               <InputSection title="氏名" required={true}>
                 <div className="flex gap-2">
                   <CustomInput placeholder="姓" />
