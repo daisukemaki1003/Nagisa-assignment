@@ -1,16 +1,16 @@
 "use client";
 
-import {useEffect, useMemo, useState} from "react";
+import { useEffect, useMemo, useState } from "react";
 
-import {CustomButton} from "@/components/Button";
-import {CustomInput} from "@/components/Input";
-import {Message} from "@/components/Message";
-import {CustomSelect} from "@/components/Select";
-import {PREFECTURES} from "@/constants/prefectures";
-import {useForm, type PaymentMethod} from "@/hooks/useForm";
-import {X} from "lucide-react";
+import { CustomButton } from "@/components/Button";
+import { CustomInput } from "@/components/Input";
+import { Message } from "@/components/Message";
+import { CustomSelect } from "@/components/Select";
+import { PREFECTURES } from "@/constants/prefectures";
+import { useForm, type PaymentMethod } from "@/hooks/useForm";
+import { X } from "lucide-react";
 
-const paymentMethods: Array<{value: PaymentMethod; label: string}> = [
+const paymentMethods: Array<{ value: PaymentMethod; label: string }> = [
   {
     value: "credit_card",
     label: "クレジットカード（Visa, MasterCard, JCB, American Express）",
@@ -43,6 +43,7 @@ export default function Home() {
   } = useForm();
   const [isModalOpen, setIsModalOpen] = useState(false);
 
+  // 購入内容確認モーダルを開いたときの処理
   useEffect(() => {
     if (isModalOpen) {
       const originalOverflow = document.body.style.overflow;
@@ -89,8 +90,9 @@ export default function Home() {
       .join("");
 
     const buildingLine = formData.building.trim();
-
-    const addressLines = [mainAddressLine, buildingLine].filter((line) => line.length > 0);
+    const addressLines = [mainAddressLine, buildingLine].filter(
+      (line) => line.length > 0,
+    );
 
     return {
       fullName,
@@ -102,8 +104,10 @@ export default function Home() {
 
   // 購入内容確認モーダルで表示する支払い方法を取得する
   const selectedPaymentMethodLabel =
-    paymentMethods.find((method) => method.value === formData.paymentMethod)?.label ??
-    paymentMethods[0]?.label ?? "";
+    paymentMethods.find((method) => method.value === formData.paymentMethod)
+      ?.label ??
+    paymentMethods[0]?.label ??
+    "";
 
   return (
     <div className="min-h-screen w-full bg-gray-50 font-sans">
@@ -121,7 +125,7 @@ export default function Home() {
               </Message>
 
               <InputSection title="氏名" required={true}>
-                <div className="flex gap-2 sm:flex-row flex-col">
+                <div className="flex flex-col gap-2 sm:flex-row">
                   <CustomInput
                     placeholder="姓"
                     value={formData.lastName}
@@ -276,7 +280,9 @@ export default function Home() {
               <section>
                 <h2 className="text-lg font-bold">配送先</h2>
                 <div className="mt-4 flex flex-col gap-1 border border-gray-300 p-3 text-xs text-black/80">
-                  <p className="text-sm font-bold text-black">{confirmationDetails.fullName} 様</p>
+                  <p className="text-sm font-bold text-black">
+                    {confirmationDetails.fullName} 様
+                  </p>
                   <p>{confirmationDetails.phoneNumber}</p>
                   <p>{confirmationDetails.postalCode}</p>
                   {confirmationDetails.addressLines.map((line, index) => (
@@ -310,7 +316,7 @@ type InputSectionProps = {
   required: boolean;
   children: React.ReactNode;
 };
-const InputSection = ({title, required, children}: InputSectionProps) => {
+const InputSection = ({ title, required, children }: InputSectionProps) => {
   return (
     <section className="flex flex-col gap-2">
       <div className="flex gap-2">
