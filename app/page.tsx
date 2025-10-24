@@ -58,6 +58,7 @@ export default function Home() {
     setIsModalOpen(false);
   };
 
+  // テキスト入力の変更を処理する
   const handleTextChange = (field: TextField) => {
     return (event: ChangeEvent<HTMLInputElement>) => {
       const {value} = event.target;
@@ -69,18 +70,21 @@ export default function Home() {
     };
   };
 
+  // 支払い方法の変更を処理する
   const handlePaymentMethodChange = (event: ChangeEvent<HTMLInputElement>) => {
     const value = event.target.value as PaymentMethod;
     setFormData((prev) => ({...prev, paymentMethod: value}));
     clearFieldError("paymentMethod");
   };
 
+  // 次へ進むボタンをクリックしたときの処理
   const handleNextStep = () => {
     const isValid = handleSubmit(formData);
     if (!isValid) return;
     setIsModalOpen(true);
   };
 
+  // 購入内容確認モーダルで表示する配送先情報を取得する
   const confirmationDetails: ConfirmationDetails = useMemo(() => {
     const fullName = [formData.lastName.trim(), formData.firstName.trim()]
       .filter(Boolean)
@@ -105,20 +109,6 @@ export default function Home() {
       addressLines,
     };
   }, [formData]);
-
-  const selectedPaymentMethodLabel =
-    paymentMethods.find((method) => method.value === formData.paymentMethod)?.label ??
-    paymentMethods[0]?.label ?? "";
-
-  const displayFullName = confirmationDetails.fullName
-    ? `${confirmationDetails.fullName}様`
-    : "未入力";
-  const displayPhoneNumber = confirmationDetails.phoneNumber || "未入力";
-  const displayPostalCode = confirmationDetails.postalCode
-    ? `〒${confirmationDetails.postalCode}`
-    : "未入力";
-  const displayAddressLines =
-    confirmationDetails.addressLines.length > 0 ? confirmationDetails.addressLines : ["未入力"];
 
   return (
     <div className="min-h-screen w-full bg-gray-50 font-sans">
@@ -268,17 +258,17 @@ export default function Home() {
               <section>
                 <h2 className="text-lg font-bold">お支払い方法</h2>
                 <div className="mt-4 border border-gray-300 p-3 text-sm">
-                  {selectedPaymentMethodLabel}
+                  {paymentMethods.find((method) => method.value === formData.paymentMethod)?.label ?? ""}
                 </div>
               </section>
 
               <section>
                 <h2 className="text-lg font-bold">配送先</h2>
                 <div className="mt-4 flex flex-col gap-1 border border-gray-300 p-3 text-xs text-black/80">
-                  <p className="text-sm font-bold text-black">{displayFullName}</p>
-                  <p>{displayPhoneNumber}</p>
-                  <p>{displayPostalCode}</p>
-                  {displayAddressLines.map((line, index) => (
+                  <p className="text-sm font-bold text-black">{confirmationDetails.fullName} 様</p>
+                  <p>{confirmationDetails.phoneNumber}</p>
+                  <p>{confirmationDetails.postalCode}</p>
+                  {confirmationDetails.addressLines.map((line, index) => (
                     <p key={`${line}-${index}`}>{line}</p>
                   ))}
                 </div>
