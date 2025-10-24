@@ -1,3 +1,4 @@
+import {CustomButton} from "@/components/Button";
 import {CustomInput} from "@/components/Input";
 import {Message} from "@/components/Message";
 
@@ -12,8 +13,8 @@ export default function Home() {
           <section className="flex flex-col gap-6">
             <h2 className="text-lg font-bold">配送先情報</h2>
 
+            {/* 配送先情報フォーム */}
             <div className="flex flex-col gap-5 border border-gray-200 p-6">
-
               <Message variant="warning">
                 ※配送先住所に誤りがある場合は、住所不明のため配送不可となります。送付先ご住所・郵便番号に誤りがないか十分にご確認をお願いいたします。
               </Message>
@@ -51,6 +52,7 @@ export default function Home() {
             </div>
           </section>
 
+          {/* お支払い方法 */}
           <section className="flex flex-col gap-6">
             <h2 className="text-lg font-bold">お支払い方法</h2>
             <div className="flex flex-col gap-2">
@@ -71,6 +73,12 @@ export default function Home() {
               ))}
             </div>
           </section>
+
+          {/* フォームナビゲーションボタン */}
+          <div className="flex flex-col gap-2 max-w-xs mx-auto w-full">
+            <CustomButton>次へ進む</CustomButton>
+            <CustomButton variant="white">戻る</CustomButton>
+          </div>
 
         </form>
       </main>
