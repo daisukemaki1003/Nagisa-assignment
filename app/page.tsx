@@ -1,9 +1,16 @@
 "use client";
 
+import {ChangeEvent, useMemo, useState} from "react";
+
 import {CustomButton} from "@/components/Button";
 import {CustomInput} from "@/components/Input";
 import {Message} from "@/components/Message";
-import {useCheckoutForm, type PaymentMethod} from "@/hooks/useCheckoutForm";
+import {
+  type FormData,
+  type PaymentMethod,
+  type RequiredField,
+  useCheckoutForm,
+} from "@/hooks/useCheckoutForm";
 import {X} from "lucide-react";
 
 const paymentMethods: Array<{value: PaymentMethod; label: string}> = [
@@ -21,20 +28,97 @@ const paymentMethods: Array<{value: PaymentMethod; label: string}> = [
   },
 ];
 
+const initialFormData: FormData = {
+  lastName: "",
+  firstName: "",
+  phoneNumber: "",
+  postalCode: "",
+  prefecture: "",
+  city: "",
+  address: "",
+  building: "",
+  paymentMethod: "credit_card",
+};
+
+type TextField = Exclude<keyof FormData, "paymentMethod">;
+
+type ConfirmationDetails = {
+  fullName: string;
+  phoneNumber: string;
+  postalCode: string;
+  addressLines: string[];
+};
+
 export default function Home() {
-  const {
-    isModalOpen,
-    closeModal,
-    handleNextStep,
-    getTextFieldProps,
-    selectedPaymentMethod,
-    handlePaymentMethodChange,
-    paymentMethodError,
-  } = useCheckoutForm();
+  const {errors, clearFieldError, handleSubmit} = useCheckoutForm();
+  const [formData, setFormData] = useState<FormData>(initialFormData);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+  };
+
+  const handleTextChange = (field: TextField) => {
+    return (event: ChangeEvent<HTMLInputElement>) => {
+      const {value} = event.target;
+      setFormData((prev) => ({...prev, [field]: value}));
+
+      if (field !== "building" && value.trim() !== "") {
+        clearFieldError(field as RequiredField);
+      }
+    };
+  };
+
+  const handlePaymentMethodChange = (event: ChangeEvent<HTMLInputElement>) => {
+    const value = event.target.value as PaymentMethod;
+    setFormData((prev) => ({...prev, paymentMethod: value}));
+    clearFieldError("paymentMethod");
+  };
+
+  const handleNextStep = () => {
+    const isValid = handleSubmit(formData);
+    if (!isValid) return;
+    setIsModalOpen(true);
+  };
+
+  const confirmationDetails: ConfirmationDetails = useMemo(() => {
+    const fullName = [formData.lastName.trim(), formData.firstName.trim()]
+      .filter(Boolean)
+      .join(" ");
+
+    const mainAddressLine = [
+      formData.prefecture.trim(),
+      formData.city.trim(),
+      formData.address.trim(),
+    ]
+      .filter(Boolean)
+      .join("");
+
+    const buildingLine = formData.building.trim();
+
+    const addressLines = [mainAddressLine, buildingLine].filter((line) => line.length > 0);
+
+    return {
+      fullName,
+      phoneNumber: formData.phoneNumber.trim(),
+      postalCode: formData.postalCode.trim(),
+      addressLines,
+    };
+  }, [formData]);
 
   const selectedPaymentMethodLabel =
-    paymentMethods.find((method) => method.value === selectedPaymentMethod)?.label ??
+    paymentMethods.find((method) => method.value === formData.paymentMethod)?.label ??
     paymentMethods[0]?.label ?? "";
+
+  const displayFullName = confirmationDetails.fullName
+    ? `${confirmationDetails.fullName}様`
+    : "未入力";
+  const displayPhoneNumber = confirmationDetails.phoneNumber || "未入力";
+  const displayPostalCode = confirmationDetails.postalCode
+    ? `〒${confirmationDetails.postalCode}`
+    : "未入力";
+  const displayAddressLines =
+    confirmationDetails.addressLines.length > 0 ? confirmationDetails.addressLines : ["未入力"];
 
   return (
     <div className="min-h-screen w-full bg-gray-50 font-sans">
@@ -55,11 +139,17 @@ export default function Home() {
                 <div className="flex gap-2">
                   <CustomInput
                     placeholder="姓"
-                    {...getTextFieldProps("lastName")}
+                    value={formData.lastName}
+                    onChange={handleTextChange("lastName")}
+                    isError={Boolean(errors.lastName)}
+                    errorMessage={errors.lastName}
                   />
                   <CustomInput
                     placeholder="名"
-                    {...getTextFieldProps("firstName")}
+                    value={formData.firstName}
+                    onChange={handleTextChange("firstName")}
+                    isError={Boolean(errors.firstName)}
+                    errorMessage={errors.firstName}
                   />
                 </div>
               </InputSection>
@@ -67,42 +157,58 @@ export default function Home() {
               <InputSection title="電話番号" required={true}>
                 <CustomInput
                   placeholder="電話番号"
-                  {...getTextFieldProps("phoneNumber")}
+                  value={formData.phoneNumber}
+                  onChange={handleTextChange("phoneNumber")}
+                  isError={Boolean(errors.phoneNumber)}
+                  errorMessage={errors.phoneNumber}
                 />
               </InputSection>
 
               <InputSection title="郵便番号" required={true}>
                 <CustomInput
                   placeholder="郵便番号"
-                  {...getTextFieldProps("postalCode")}
+                  value={formData.postalCode}
+                  onChange={handleTextChange("postalCode")}
+                  isError={Boolean(errors.postalCode)}
+                  errorMessage={errors.postalCode}
                 />
               </InputSection>
 
               <InputSection title="都道府県" required={true}>
                 <CustomInput
                   placeholder="都道府県"
-                  {...getTextFieldProps("prefecture")}
+                  value={formData.prefecture}
+                  onChange={handleTextChange("prefecture")}
+                  isError={Boolean(errors.prefecture)}
+                  errorMessage={errors.prefecture}
                 />
               </InputSection>
 
               <InputSection title="市区町村" required={true}>
                 <CustomInput
                   placeholder="市区町村"
-                  {...getTextFieldProps("city")}
+                  value={formData.city}
+                  onChange={handleTextChange("city")}
+                  isError={Boolean(errors.city)}
+                  errorMessage={errors.city}
                 />
               </InputSection>
 
               <InputSection title="番地" required={true}>
                 <CustomInput
                   placeholder="番地"
-                  {...getTextFieldProps("address")}
+                  value={formData.address}
+                  onChange={handleTextChange("address")}
+                  isError={Boolean(errors.address)}
+                  errorMessage={errors.address}
                 />
               </InputSection>
 
               <InputSection title="建物名・部屋番号" required={false}>
                 <CustomInput
                   placeholder="建物名・部屋番号"
-                  {...getTextFieldProps("building")}
+                  value={formData.building}
+                  onChange={handleTextChange("building")}
                 />
               </InputSection>
             </div>
@@ -121,15 +227,15 @@ export default function Home() {
                     type="radio"
                     name="payment_method"
                     value={paymentMethod.value}
-                    checked={selectedPaymentMethod === paymentMethod.value}
+                    checked={formData.paymentMethod === paymentMethod.value}
                     onChange={handlePaymentMethodChange}
                   />
                   <span className="text-sm">{paymentMethod.label}</span>
                 </label>
               ))}
-              {paymentMethodError ? (
+              {errors.paymentMethod ? (
                 <span className="text-xs text-red-600" role="alert">
-                  {paymentMethodError}
+                  {errors.paymentMethod}
                 </span>
               ) : null}
             </div>
@@ -147,6 +253,7 @@ export default function Home() {
         </form>
       </main>
 
+      {/* 購入内容確認モーダル */}
       {isModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
           <div className="w-full max-w-2xl rounded-sm bg-white">
@@ -168,10 +275,12 @@ export default function Home() {
               <section>
                 <h2 className="text-lg font-bold">配送先</h2>
                 <div className="mt-4 flex flex-col gap-1 border border-gray-300 p-3 text-xs text-black/80">
-                  <p className="text-sm font-bold text-black">田中 太郎様</p>
-                  <p>080-1234-5678</p>
-                  <p>〒123-1234</p>
-                  <p>東京都渋谷区渋谷3丁目9-10KDCビル8F</p>
+                  <p className="text-sm font-bold text-black">{displayFullName}</p>
+                  <p>{displayPhoneNumber}</p>
+                  <p>{displayPostalCode}</p>
+                  {displayAddressLines.map((line, index) => (
+                    <p key={`${line}-${index}`}>{line}</p>
+                  ))}
                 </div>
               </section>
 
