@@ -1,5 +1,7 @@
 import {type SelectHTMLAttributes} from "react";
 
+import {ChevronDown} from "lucide-react";
+
 type CustomSelectProps = SelectHTMLAttributes<HTMLSelectElement> & {
   isError?: boolean;
   errorMessage?: string;
@@ -33,9 +35,16 @@ export function CustomSelect({
 
   return (
     <div className="flex w-full flex-col">
-      <select {...rest} className={selectClasses.join(" ")} aria-invalid={isError}>
-        {children}
-      </select>
+      <div className="relative w-fit">
+        <select
+          {...rest}
+          className={selectClasses.concat("appearance-none", "pr-8").join(" ")}
+          aria-invalid={isError}
+        >
+          {children}
+        </select>
+        <ChevronDown className="pointer-events-none absolute right-2 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-500" />
+      </div>
       {isError && errorMessage ? (
         <span className="mt-1 text-xs text-red-600" role="alert">
           {errorMessage}

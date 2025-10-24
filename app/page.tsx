@@ -93,7 +93,7 @@ export default function Home() {
 
   return (
     <div className="min-h-screen w-full bg-gray-50 font-sans">
-      <main className="mx-auto max-w-3xl px-16 py-32">
+      <main className="mx-auto max-w-3xl px-5 py-32">
         <h1 className="text-2xl font-bold">ご購入手続き</h1>
 
         <form className="mt-10 flex flex-col gap-10">
@@ -107,7 +107,7 @@ export default function Home() {
               </Message>
 
               <InputSection title="氏名" required={true}>
-                <div className="flex gap-2">
+                <div className="flex gap-2 sm:flex-row flex-col">
                   <CustomInput
                     placeholder="姓"
                     value={formData.lastName}
