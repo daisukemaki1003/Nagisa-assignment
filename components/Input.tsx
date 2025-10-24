@@ -1,26 +1,28 @@
 import {type InputHTMLAttributes} from "react";
 
-type InputProps = InputHTMLAttributes<HTMLInputElement> & {
+type CustomInputProps = InputHTMLAttributes<HTMLInputElement> & {
   isError?: boolean;
   errorMessage?: string;
 };
 
-export function Input({
+export function CustomInput({
   placeholder,
   isError = false,
   errorMessage,
   className,
   ...rest
-}: InputProps) {
+}: CustomInputProps) {
   const inputClasses = [
     "w-full",
-    "rounded",
+    "bg-white",
     "border",
+    "border-gray-300",
+    "rounded",
     "px-3",
     "py-2",
     "text-sm",
-    "outline-none",
     "transition-colors",
+    "outline-none",
   ];
 
   // エラーがあれば赤色にする
