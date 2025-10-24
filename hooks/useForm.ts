@@ -1,6 +1,6 @@
 "use client";
 
-import {ChangeEvent, useState} from "react";
+import { ChangeEvent, useState } from "react";
 
 export type PaymentMethod =
   | "credit_card"
@@ -45,7 +45,9 @@ const requiredFieldMessages: Record<RequiredField, string> = {
   paymentMethod: "お支払い方法を選択してください",
 };
 
-const requiredFields: RequiredField[] = Object.keys(requiredFieldMessages) as RequiredField[];
+const requiredFields: RequiredField[] = Object.keys(
+  requiredFieldMessages,
+) as RequiredField[];
 
 type SubmitResult = {
   success: boolean;
@@ -63,7 +65,7 @@ export function useForm() {
   const clearFieldError = (field: RequiredField) => {
     setErrors((prev) => {
       if (!prev[field]) return prev;
-      const nextErrors = {...prev};
+      const nextErrors = { ...prev };
       delete nextErrors[field];
       return nextErrors;
     });
@@ -72,8 +74,8 @@ export function useForm() {
   // テキスト入力の変更を反映し、必要に応じてエラーを解消する
   const handleTextChange = (field: TextField) => {
     return (event: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-      const {value} = event.target;
-      setFormData((prev) => ({...prev, [field]: value}));
+      const { value } = event.target;
+      setFormData((prev) => ({ ...prev, [field]: value }));
 
       if (field !== "building" && value.trim() !== "") {
         clearFieldError(field as RequiredField);
@@ -84,7 +86,7 @@ export function useForm() {
   // 支払い方法の選択変更を反映する
   const handlePaymentMethodChange = (event: ChangeEvent<HTMLInputElement>) => {
     const value = event.target.value as PaymentMethod;
-    setFormData((prev) => ({...prev, paymentMethod: value}));
+    setFormData((prev) => ({ ...prev, paymentMethod: value }));
     clearFieldError("paymentMethod");
   };
 
@@ -113,11 +115,14 @@ export function useForm() {
   // バリデーション通過時に注文データを送信する
   const submitOrder = (): SubmitResult => {
     const isValid = validateForm();
-    if (!isValid) return {success: false};
+    if (!isValid) return { success: false };
 
-    // 実際の送信処理はここに実装する
+    /**
+     * 実際の送信処理はここに実装する
+     */
+
     console.info("Submitting order", formData);
-    return {success: true, data: formData};
+    return { success: true, data: formData };
   };
 
   // フォームの状態と操作を公開する

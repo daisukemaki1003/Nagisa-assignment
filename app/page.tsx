@@ -1,6 +1,6 @@
 "use client";
 
-import {useMemo, useState} from "react";
+import {useEffect, useMemo, useState} from "react";
 
 import {CustomButton} from "@/components/Button";
 import {CustomInput} from "@/components/Input";
@@ -42,6 +42,20 @@ export default function Home() {
     submitOrder,
   } = useForm();
   const [isModalOpen, setIsModalOpen] = useState(false);
+
+  useEffect(() => {
+    if (isModalOpen) {
+      const originalOverflow = document.body.style.overflow;
+      document.body.style.overflow = "hidden";
+      return () => {
+        document.body.style.overflow = originalOverflow;
+      };
+    }
+
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [isModalOpen]);
 
   // 購入内容確認モーダルを閉じる
   const closeModal = () => setIsModalOpen(false);
@@ -236,8 +250,14 @@ export default function Home() {
 
       {/* 購入内容確認モーダル */}
       {isModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-          <div className="w-full max-w-2xl rounded-sm bg-white">
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4"
+          onClick={closeModal}
+        >
+          <div
+            className="w-full max-w-2xl rounded-sm bg-white"
+            onClick={(event) => event.stopPropagation()}
+          >
             <div className="flex items-center justify-between border-b border-gray-200 px-5 py-3">
               <h2 className="text-sm font-bold">購入内容確認</h2>
               <button type="button" onClick={closeModal}>
