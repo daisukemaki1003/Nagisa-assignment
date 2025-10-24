@@ -1,12 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import {useState} from "react";
 
-import { CustomButton } from "@/components/Button";
-import { CustomInput } from "@/components/Input";
-import { Message } from "@/components/Message";
-import { X } from "lucide-react";
-import { required } from "zod/mini";
+import {CustomButton} from "@/components/Button";
+import {CustomInput} from "@/components/Input";
+import {Message} from "@/components/Message";
+import {X} from "lucide-react";
+import {required} from "zod/mini";
 
 export default function Home() {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -132,7 +132,7 @@ export default function Home() {
               </section>
 
               <section>
-                <h2 className="text-lg font-bold">お支払い方法</h2>
+                <h2 className="text-lg font-bold">配送先</h2>
                 <div className="mt-4 flex flex-col gap-1 border border-gray-300 p-3 text-xs text-black/80">
                   <p className="text-sm font-bold text-black">田中 太郎様</p>
                   <p>080-1234-5678</p>
@@ -166,7 +166,7 @@ type InputSectionProps = {
   required: boolean;
   children: React.ReactNode;
 };
-const InputSection = ({ title, required, children }: InputSectionProps) => {
+const InputSection = ({title, required, children}: InputSectionProps) => {
   return (
     <section className="flex flex-col gap-2">
       <div className="flex gap-2">
