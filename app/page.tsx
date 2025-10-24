@@ -8,7 +8,7 @@ export default function Home() {
       <main className="max-w-3xl py-32 px-16 mx-auto">
         <h1 className="text-2xl font-bold">ご購入手続き</h1>
 
-        <form className="flex flex-col gap-8 mt-8">
+        <form className="flex flex-col gap-10 mt-10">
           <section className="flex flex-col gap-6">
             <h2 className="text-lg font-bold">配送先情報</h2>
 
@@ -53,7 +53,23 @@ export default function Home() {
 
           <section className="flex flex-col gap-6">
             <h2 className="text-lg font-bold">お支払い方法</h2>
-            <CustomInput placeholder="Email" />
+            <div className="flex flex-col gap-2">
+              {[{
+                value: 'credit_card',
+                label: 'クレジットカード（Visa, MasterCard, JCB, American Express）',
+              }, {
+                value: 'convenience_store',
+                label: 'コンビニ決済',
+              }, {
+                value: 'carrier_payment',
+                label: 'キャリア決済',
+              }].map((paymentMethod) => (
+                <label className="flex gap-2 border border-gray-300 p-3" key={paymentMethod.value}>
+                  <input type="radio" name="payment_method" value={paymentMethod.value} />
+                  <span className="text-sm">{paymentMethod.label}</span>
+                </label>
+              ))}
+            </div>
           </section>
 
         </form>
