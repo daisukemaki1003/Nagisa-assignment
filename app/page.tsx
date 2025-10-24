@@ -1,23 +1,40 @@
 "use client";
 
-import {useState} from "react";
-
 import {CustomButton} from "@/components/Button";
 import {CustomInput} from "@/components/Input";
 import {Message} from "@/components/Message";
+import {useCheckoutForm, type PaymentMethod} from "@/hooks/useCheckoutForm";
 import {X} from "lucide-react";
-import {required} from "zod/mini";
+
+const paymentMethods: Array<{value: PaymentMethod; label: string}> = [
+  {
+    value: "credit_card",
+    label: "クレジットカード（Visa, MasterCard, JCB, American Express）",
+  },
+  {
+    value: "convenience_store",
+    label: "コンビニ決済",
+  },
+  {
+    value: "carrier_payment",
+    label: "キャリア決済",
+  },
+];
 
 export default function Home() {
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const {
+    isModalOpen,
+    closeModal,
+    handleNextStep,
+    getTextFieldProps,
+    selectedPaymentMethod,
+    handlePaymentMethodChange,
+    paymentMethodError,
+  } = useCheckoutForm();
 
-  const openModal = () => {
-    setIsModalOpen(true);
-  };
-
-  const closeModal = () => {
-    setIsModalOpen(false);
-  };
+  const selectedPaymentMethodLabel =
+    paymentMethods.find((method) => method.value === selectedPaymentMethod)?.label ??
+    paymentMethods[0]?.label ?? "";
 
   return (
     <div className="min-h-screen w-full bg-gray-50 font-sans">
@@ -36,33 +53,57 @@ export default function Home() {
 
               <InputSection title="氏名" required={true}>
                 <div className="flex gap-2">
-                  <CustomInput placeholder="姓" />
-                  <CustomInput placeholder="名" />
+                  <CustomInput
+                    placeholder="姓"
+                    {...getTextFieldProps("lastName")}
+                  />
+                  <CustomInput
+                    placeholder="名"
+                    {...getTextFieldProps("firstName")}
+                  />
                 </div>
               </InputSection>
 
               <InputSection title="電話番号" required={true}>
-                <CustomInput placeholder="電話番号" />
+                <CustomInput
+                  placeholder="電話番号"
+                  {...getTextFieldProps("phoneNumber")}
+                />
               </InputSection>
 
               <InputSection title="郵便番号" required={true}>
-                <CustomInput placeholder="郵便番号" />
+                <CustomInput
+                  placeholder="郵便番号"
+                  {...getTextFieldProps("postalCode")}
+                />
               </InputSection>
 
               <InputSection title="都道府県" required={true}>
-                <CustomInput placeholder="都道府県" />
+                <CustomInput
+                  placeholder="都道府県"
+                  {...getTextFieldProps("prefecture")}
+                />
               </InputSection>
 
               <InputSection title="市区町村" required={true}>
-                <CustomInput placeholder="市区町村" />
+                <CustomInput
+                  placeholder="市区町村"
+                  {...getTextFieldProps("city")}
+                />
               </InputSection>
 
               <InputSection title="番地" required={true}>
-                <CustomInput placeholder="番地" />
+                <CustomInput
+                  placeholder="番地"
+                  {...getTextFieldProps("address")}
+                />
               </InputSection>
 
               <InputSection title="建物名・部屋番号" required={false}>
-                <CustomInput placeholder="建物名・部屋番号" />
+                <CustomInput
+                  placeholder="建物名・部屋番号"
+                  {...getTextFieldProps("building")}
+                />
               </InputSection>
             </div>
           </section>
@@ -71,21 +112,7 @@ export default function Home() {
           <section className="flex flex-col gap-6">
             <h2 className="text-lg font-bold">お支払い方法</h2>
             <div className="flex flex-col gap-2">
-              {[
-                {
-                  value: "credit_card",
-                  label:
-                    "クレジットカード（Visa, MasterCard, JCB, American Express）",
-                },
-                {
-                  value: "convenience_store",
-                  label: "コンビニ決済",
-                },
-                {
-                  value: "carrier_payment",
-                  label: "キャリア決済",
-                },
-              ].map((paymentMethod) => (
+              {paymentMethods.map((paymentMethod) => (
                 <label
                   className="flex gap-2 border border-gray-300 p-3"
                   key={paymentMethod.value}
@@ -94,16 +121,23 @@ export default function Home() {
                     type="radio"
                     name="payment_method"
                     value={paymentMethod.value}
+                    checked={selectedPaymentMethod === paymentMethod.value}
+                    onChange={handlePaymentMethodChange}
                   />
                   <span className="text-sm">{paymentMethod.label}</span>
                 </label>
               ))}
+              {paymentMethodError ? (
+                <span className="text-xs text-red-600" role="alert">
+                  {paymentMethodError}
+                </span>
+              ) : null}
             </div>
           </section>
 
           {/* フォームナビゲーションボタン */}
           <div className="mx-auto flex w-full max-w-xs flex-col gap-2">
-            <CustomButton type="button" onClick={openModal}>
+            <CustomButton type="button" onClick={handleNextStep}>
               次へ進む
             </CustomButton>
             <CustomButton type="button" variant="white">
@@ -127,7 +161,7 @@ export default function Home() {
               <section>
                 <h2 className="text-lg font-bold">お支払い方法</h2>
                 <div className="mt-4 border border-gray-300 p-3 text-sm">
-                  クレジットカード（Visa, MasterCard, JCB, American Express）
+                  {selectedPaymentMethodLabel}
                 </div>
               </section>
 
